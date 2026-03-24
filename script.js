@@ -5,15 +5,15 @@
 
 // Configuration des données
 const PRODUCTS = [
-    { id: "p1", name: "nounours", price: 800, img: "img/bougie-B.jpeg", desc: "Bougie nounours", category: "bougie" },
-    { id: "p2", name: "noeud", price: 1200, img: "img/bougie-R.jpeg", desc: "Bougie noeud", category: "bougie" },
-    { id: "p3", name: "tulips", price: 800, img: "img/bougie-V.jpeg", desc: "Parcelle tulips", category: "parcelle" },
-    { id: "p4", name: "bubble 8", price: 440, img: "img/candle1.jpeg", desc: "Bougie bubble 8", category: "bougie" },
-    { id: "p5", name: "rose", price: 4500, img: "img/pack 5 couleurs (3).jpeg", desc: "Pack rose", category: "propriete" },
-    { id: "p6", name: "mini rose", price: 800, img: "img/pack bleu.png", desc: "Mini rose", category: "bougie" },
-    { id: "p7", name: "fleur", price: 2000, img: "img/pack boy-girl.jpeg", desc: "Bougie fleur", category: "propriete" },
-    { id: "p8", name: "heart cake", price: 1200, img: "img/pack rouge.jpeg", desc: "Heart cake", category: "parcelle" },
-    { id: "p9", name: "bubble 27", price: 800, img: "img/pack vert.jpeg", desc: "Bubble 27", category: "bougie" }
+    { id: "p1", name: "nounours", price: 800, img: "bougie-B.jpeg", desc: "Bougie nounours", category: "bougie" },
+    { id: "p2", name: "noeud", price: 1200, img: "bougie-R.jpeg", desc: "Bougie noeud", category: "bougie" },
+    { id: "p3", name: "tulips", price: 800, img: "bougie-V.jpeg", desc: "Parcelle tulips", category: "parcelle" },
+    { id: "p4", name: "bubble 8", price: 440, img: "candle1.jpeg", desc: "Bougie bubble 8", category: "bougie" },
+    { id: "p5", name: "rose", price: 4500, img: "pack 5 couleurs (3).jpeg", desc: "Pack rose", category: "propriete" },
+    { id: "p6", name: "mini rose", price: 800, img: "pack bleu.png", desc: "Mini rose", category: "bougie" },
+    { id: "p7", name: "fleur", price: 2000, img: "pack boy-girl.jpeg", desc: "Bougie fleur", category: "propriete" },
+    { id: "p8", name: "heart cake", price: 1200, img: "pack rouge.jpeg", desc: "Heart cake", category: "parcelle" },
+    { id: "p9", name: "bubble 27", price: 800, img: "pack vert.jpeg", desc: "Bubble 27", category: "bougie" }
 ];
 
 const GALLERY = [
