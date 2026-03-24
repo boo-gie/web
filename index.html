@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Boo-gie! — Bougies artisanales</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="boo-gie-logo.png" />
+  <style>
+    /* Styles pour les nouveaux éléments */
+    .category-filters { 
+      display: flex; 
+      justify-content: center; 
+      gap: 10px; 
+      margin: 20px 0; 
+      flex-wrap: wrap; 
+    }
+    .filter-btn { 
+      padding: 10px 20px; 
+      border-radius: 20px; 
+      border: 2px solid var(--pink); 
+      background: white; 
+      cursor: pointer;
+      color: var(--pink);
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .filter-btn.active { 
+      background: var(--pink); 
+      color: white; 
+    }
+    .filter-btn:hover {
+      background: var(--accent);
+    }
+    .cart-toast { 
+      position: fixed; 
+      top: 20px; 
+      right: 20px; 
+      background: var(--success); 
+      color: white; 
+      padding: 15px 25px; 
+      border-radius: 8px; 
+      transform: translateY(-100px); 
+      transition: 0.5s; 
+      z-index: 10000; 
+      box-shadow: var(--shadow); 
+      font-weight: 600;
+    }
+    .cart-toast.show { 
+      transform: translateY(0); 
+    }
+    #order-modal { 
+      z-index: 10001; 
+    }
+    /* Menu flottant */
+    .float-container { 
+      position: fixed; 
+      bottom: 80px; 
+      right: 20px; 
+      z-index: 100; 
+    }
+    .float-main { 
+      width: 60px; 
+      height: 60px; 
+      border-radius: 50%; 
+      background: var(--pink-2); 
+      color: white; 
+      border: none; 
+      font-size: 28px; 
+      cursor: pointer; 
+      box-shadow: var(--shadow); 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .float-options { 
+      position: absolute; 
+      bottom: 70px; 
+      right: 0; 
+      display: none; 
+      flex-direction: column; 
+      gap: 10px; 
+    }
+    .float-options.show { 
+      display: flex; 
+    }
+    .float-item { 
+      padding: 12px 18px; 
+      background: var(--card); 
+      color: var(--brown); 
+      text-decoration: none; 
+      border-radius: 8px; 
+      box-shadow: var(--soft-shadow); 
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .float-item:hover {
+      background: var(--pink);
+      color: white;
+    }
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    @media (max-width: 900px) {
+      .floating-btn {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="cart-toast" class="cart-toast">✨ Produit ajouté au panier !</div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-left">
+      <img src="boo-gie-logo.png" alt="Boo-gie logo" class="nav-logo">
+      <span class="brand">Boo-gie!</span>
+    </div>
+    <div class="nav-right">
+      <a class="nav-link" href="#home">Accueil</a>
+      <a class="nav-link" href="#catalog">Catalogue</a>
+      <a class="nav-link" href="#gallery">Galerie</a>
+      <a class="nav-link" href="#about">À propos</a>
+      <a class="nav-link" href="#contact">Contact</a>
+      <button id="open-cart" class="cart-btn">🛒 <span id="cart-count">0</span></button>
+    </div>
+  </nav>
+
+  <!-- Header/Hero Section -->
+  <header id="home" class="hero">
+    <div class="hero-inner">
+      <img src="boo-gie-logo.png" alt="logo" class="hero-logo">
+      <h1 class="hero-title">Boo-gie! — Bougies artisanales</h1>
+      <p class="hero-sub">Entre l'ombre et la lumière, Boo-gie ! Ça fond, ça brille, ça vit. ✨</p>
+      <div class="hero-cta">
+        <a class="btn" href="#catalog">Voir le catalogue</a>
+        <a class="btn ghost" href="#gallery">Nos créations</a>
+      </div>
+    </div>
+    <div class="sparkles" aria-hidden="true"></div>
+    
+    <!-- Bouton personnalisation -->
+    <div style="max-width:1100px; margin:30px auto 0; display:flex; justify-content:center; padding:0 20px;">
+      <button id="open-custom-btn" class="btn ghost">Créer une bougie personnalisée</button>
+    </div>
+  </header>
+
+  <!-- Social Links -->
+  <section class="socials-strip">
+    <div class="socials-inner">
+      <a href="https://www.instagram.com/__boo.gie__" target="_blank" rel="noopener" class="social-square">Instagram</a>
+      <a href="#" class="social-square">Facebook</a>
+      <a href="#" class="social-square">TikTok</a>
+    </div>
+  </section>
+
+  <!-- Catalogue -->
+  <section id="catalog" class="section">
+    <h2 class="section-title">Catalogue</h2>
+    <div class="category-filters">
+      <button class="filter-btn active" data-category="all">Tout</button>
+      <button class="filter-btn" data-category="bougie">Bougies</button>
+      <button class="filter-btn" data-category="parcelle">Parcelles</button>
+      <button class="filter-btn" data-category="propriete">Propriétés</button>
+    </div>
+    <p class="section-desc">Choisis ta bougie, personnalise si tu veux — ajoute au panier et commande.</p>
+    <div id="products" class="product-grid"></div>
+  </section>
+
+  <!-- Galerie -->
+  <section id="gallery" class="section soft">
+    <h2 class="section-title">Galerie</h2>
+    <p class="section-desc">Nos créations — mises à jour régulièrement.</p>
+    <div id="gallery-grid" class="gallery-grid"></div>
+  </section>
+
+  <!-- À propos -->
+  <section id="about" class="section">
+    <h2 class="section-title">À propos</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Bienvenue chez Boo-gie! 🕯️. Notre passion est de créer des bougies artisanales uniques qui illuminent non seulement votre espace mais aussi votre âme. Chaque bougie est coulée à la main, avec amour et cire de soja 100% naturelle.</p>
+        <p>Nous sommes fiers de notre approche artisanale, garantissant que chaque pièce est une œuvre d'art unique. Que ce soit pour offrir ou pour vous faire plaisir, Boo-gie! est la touche de lumière dont vous avez besoin.</p>
+        <p>Découvrez nos créations, mélange d'élégance et de parfums envoûtants. Et n'oubliez pas, vous pouvez toujours créer votre propre bougie personnalisée !</p>
+      </div>
+      <div class="about-image">
+        <img src="boo-gie-logo.png" alt="boo-gie logo" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Avis clients -->
+  <section id="reviews" class="section soft">
+    <h2 class="section-title">Avis clients</h2>
+    <p class="section-desc">Ce qu'ils disent de nous...</p>
+    <div class="reviews-list">
+      <div class="review">"J'adore la bougie 'tulips' ! Le parfum est parfait et la qualité est exceptionnelle. Reçu rapidement !" - MELLY.</div>
+      <div class="review">"Enfin des bougies artisanales avec de vrais bons ingrédients. La personnalisation est un super concept." - Zina.</div>
+      <div class="review">"Les bougies sont magnifiques en vrai plus qu'en photos. Merci Boo-gie!" - Sabine.</div>
+    </div>
+    <div class="hero-cta-bottom" style="margin-top:20px;">
+      <a class="btn ghost" href="#contact">Laisser un avis</a>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section">
+    <h2 class="section-title">Contact & Infos</h2>
+    <p class="section-desc">On est là pour vous !</p>
+    <div class="contact-grid">
+      <div class="contact-form">
+        <h4>Envoyez-nous un message</h4>
+        <form id="contact-form" action="https://formspree.io/f/mkgkgwok" method="POST">
+          <label>Nom
+            <input type="text" name="name" required>
+          </label>
+          <label>Email
+            <input type="email" name="email" required>
+          </label>
+          <label>Message
+            <textarea name="message" rows="4" required></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn">Envoyer le message</button>
+            <span style="font-size:13px;color:var(--muted)">Réponse en 24h.</span>
+          </div>
+        </form>
+      </div>
+      <div class="contact-info">
+        <h4>Infos Pratiques</h4>
+        <p style="font-weight:700">Commande / WhatsApp</p>
+        <p style="font-size:18px;color:var(--pink);font-weight:600">+213 55 88 57 832</p>
+        <p style="font-weight:700">Email</p>
+        <p>bougies303@gmail.com</p>
+        <h4 style="margin-top:20px">Aperçu Galerie</h4>
+        <div id="mini-gallery" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div>© <span id="year"></span> Boo-gie! — Bougies artisanales</div>
+    <p>By M&Z</p>
+    <div class="footer-links">
+      <a href="#about">À propos</a> · <a href="#contact">Contact</a>
+    </div>
+  </footer>
+
+  <!-- MODALS ET PANELS -->
+  
+  <!-- Modal Personnalisation -->
+  <div id="custom-modal" class="custom-modal">
+    <div class="custom-panel">
+      <button id="close-custom" class="close">✕</button>
+      <h3>Créer ta bougie personnalisée</h3>
+      <form id="custom-form">
+        <div class="form-row">
+          <label>Parfum
+            <select id="custom-parfum" required>
+              <option value="">-- Parfum --</option>
+              <option value="Vanille">Vanille</option>
+              <option value="Jasmin">Jasmin</option>
+              <option value="Musc">Musc</option>
+              <option value="Framboise">Framboise</option>
+            </select>
+          </label>
+          <label>Modèle
+            <select id="custom-modele" required>
+              <option value="">-- Modèle --</option>
+              <!-- Rempli par JavaScript -->
+            </select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Couleur
+            <div id="color-options" class="color-grid"></div>
+          </label>
+          <label>Quantité
+            <input id="custom-qty" type="number" min="1" value="1" required>
+          </label>
+        </div>
+        <label>Message / Options (facultatif)
+          <input id="custom-message" type="text" placeholder="Ex: ajouter ruban doré, sans boîte...">
+        </label>
+        <div class="custom-preview">
+          <h4>Aperçu</h4>
+          <div id="preview-box" class="preview-box">
+            <div>
+              <img id="preview-img" src="" alt="bougie" style="max-width:120px;border-radius:8px;margin-top:8px;display:none;">
+              <span id="emoji-fallback" style="font-size:60px;display:block;">🕯️</span>
+            </div>
+            <div id="preview-meta" class="preview-meta">
+              <div id="preview-parfum">Parfum: —</div>
+              <div id="preview-modele">Modèle: —</div>
+              <div id="preview-couleur">Couleur: —</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions" style="margin-top:12px;justify-content:space-between">
+          <div style="align-self:center;color:var(--muted);font-weight:600">Prix estimé: <span id="custom-price">0 DA</span></div>
+          <div>
+            <button type="button" id="add-custom-to-cart" class="btn">Ajouter au panier</button>
+            <button type="button" id="cancel-custom" class="btn ghost">Annuler</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Panier -->
+  <aside id="cart-panel" class="cart-panel">
+    <div class="cart-head">
+      <h3>Panier</h3>
+      <button id="close-cart" class="close">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">Total : <strong id="cart-total">0,00 DA</strong></div>
+      <div class="cart-actions">
+        <button id="clear-cart" class="btn ghost">Vider</button>
+        <button id="confirm-order-btn" class="btn">Confirmer la commande</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Modal Commande -->
+  <div id="order-modal" class="custom-modal">
+    <div class="custom-panel">
+      <button id="close-order-modal" class="close">✕</button>
+      <h3>Finaliser ma commande</h3>
+      <form id="final-checkout-form" action="https://formspree.io/f/mkgkgwok" method="POST">
+        <input type="hidden" name="Detail_Panier" id="hidden-cart-list">
+        <input type="hidden" name="Total_DA" id="hidden-total-val">
+        <div class="form-row">
+          <label>Nom Complet <input type="text" name="nom" required placeholder="Votre nom"></label>
+          <label>N° Téléphone <input type="tel" name="telephone" required placeholder="05/06/07..."></label>
+        </div>
+        <label>Mode de réception
+          <select name="livraison" id="delivery-choice" required>
+            <option value="bureau">Récupération au Bureau (CPU)</option>
+            <option value="domicile">Livraison à Domicile</option>
+          </select>
+        </label>
+        <label id="addr-label" style="display:none">Adresse de livraison
+          <textarea name="adresse" rows="2" placeholder="Ville, Commune, Quartier..."></textarea>
+        </label>
+        <div class="form-actions" style="margin-top:20px;">
+          <button type="submit" class="btn" style="width:100%">🚀 Valider et Envoyer par Mail</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <button id="lb-close" class="lb-close">✕</button>
+    <img id="lb-img" src="" alt="Image en grand">
+    <div id="lb-caption" class="lb-caption"></div>
+    <button id="lb-prev" class="lb-nav">◀</button>
+    <button id="lb-next" class="lb-nav">▶</button>
+  </div>
+
+  <!-- Menu flottant contacts -->
+  <div class="float-container">
+    <div id="float-options" class="float-options">
+      <a href="https://wa.me/213558857832" target="_blank" class="float-item wa">WhatsApp</a>
+      <a href="https://www.instagram.com/__boo.gie__" target="_blank" class="float-item insta">Instagram</a>
+    </div>
+    <button class="float-main" id="float-main-btn">💬</button>
+  </div>
+
+  <!-- Bouton panier flottant (mobile) -->
+  <button id="floating-cart-btn" class="floating-btn">🛒</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
